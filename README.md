@@ -1,4 +1,4 @@
-# Scheduling Program
+# INST326 Group Project 3
 
 ## Description
  A program that manages people and their schedules. Attributes such as name, phone, email, pay rate, and hours are included.
