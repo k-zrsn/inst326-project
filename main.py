@@ -101,7 +101,47 @@ def set_week_availability(caregiver):
     print(f"\nAvailability set for {caregiver.name}.")
 
 
+def update_availability(caregivers):
+    if not caregivers:
+        print("\nNo caregivers available.")
+        return
 
+    # Display caregivers
+    print("\n--- Caregiver List ---")
+
+    for i, caregiver in enumerate(caregivers, 1):
+        print(f"{i}. {caregiver.name} ({caregiver.phone})")
+
+    # Select caregiver
+    try:
+        choice = int(input("\nSelect a caregiver by number: "))
+
+        if choice < 1 or choice > len(caregivers):
+            print("Invalid selection.")
+            return
+
+    except ValueError:
+        print("Invalid input.")
+        return
+
+    selected_caregiver = caregivers[choice - 1]
+    print(f"\nSelected caregiver: {selected_caregiver.name}")
+
+    # Update weekly availability
+    set_week_availability(selected_caregiver)
+
+
+
+def assign_shift(caregiver, date, shift):
+    # Check if person is unavailable
+    if caregiver.get_availability(date).get(shift, 'unavailable') == 'unavailable':
+        print(f"{caregiver.name} is unavailable for the {shift} shift on {date}.")
+        return
+    
+    # Assign shift 
+    print(f"{caregiver.name} assigned to the {shift} shift on {date}.")
+    caregiver.add_hours(6)  # Each shift is 6 hours
+    print(f"{caregiver.name} has now worked {caregiver.assigned_hours} hours.")
 
 ### Thomas
 
