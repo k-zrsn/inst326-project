@@ -79,11 +79,11 @@ def add_caregiver():
 ### Set availability for each caregiver
 def set_week_availability(caregiver):
     days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-    print(f"\nSetting availability for {caregiver.name}:")
+    print(f"\nSetting {caregiver.name}'s availability:")
     
     # Begin to set availability for each day
     for day in days:
-        print(f"\n--- {day} ---")
+        print(f"\n### {day} ###")
         
         # Set AM availability
         am_avail = input("Enter AM availability (preferred, available, unavailable): ").lower()
@@ -103,7 +103,7 @@ def set_week_availability(caregiver):
 
         caregiver.set_availability(day, 'PM', pm_avail)
 
-    print(f"\nAvailability set for {caregiver.name}.")
+    print(f"\n{caregiver.name}'s availability set.")
 
 
 
@@ -114,14 +114,14 @@ def update_availability(caregivers):
         return
 
     # Display caregivers
-    print("\n--- Caregiver List ---")
+    print("\n### Caregiver List ###")
 
     for i, caregiver in enumerate(caregivers, 1):
         print(f"{i}. {caregiver.name} ({caregiver.phone})")
 
     # Select caregiver
     try:
-        choice = int(input("\nSelect a caregiver by number: "))
+        choice = int(input("\nSelect a caregiver by NUMBER: "))
 
         if choice < 1 or choice > len(caregivers):
             print("Invalid selection.")
@@ -143,11 +143,11 @@ def update_availability(caregivers):
 def assign_shift(caregiver, date, shift):
     # Check if person is unavailable
     if caregiver.get_availability(date).get(shift, 'unavailable') == 'unavailable':
-        print(f"{caregiver.name} is unavailable for the {shift} shift on {date}.")
+        print(f"{caregiver.name} is unavailable on {shift} {date}.")
         return
     
     # Assign shift 
-    print(f"{caregiver.name} assigned to the {shift} shift on {date}.")
+    print(f"{caregiver.name} assigned to {shift} shift for {date}.")
     caregiver.add_hours(6)  # Each shift is 6 hours
     print(f"{caregiver.name} has now worked {caregiver.assigned_hours} hours.")
 
@@ -156,3 +156,4 @@ def assign_shift(caregiver, date, shift):
 
 
 ### Anthony
+
