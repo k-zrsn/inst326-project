@@ -7,20 +7,19 @@ import random
 
 
 
-#amShift = ["7:00 AM - 1:00 PM"]
-#pmShift = ["1:00 PM - 7:00 PM"]
-day = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat","Sun"]
-person = ["Gigi", "Noel", "Joe", "Silvia","Tess", "Rosa", "Lani", "Sayed"]
+### Initialize caregiver list
+caregivers = []
+
 
 
 ### Create Caregiver class
 class Caregiver:
-    def __init__(self, name, phone, email, pay_rate, hours=0):
+    def __init__(self, name, phone, email, pay_rate):
         self.name = name
         self.phone = phone
         self.email = email
         self.pay_rate = pay_rate
-        self.hours = hours
+        self.assigned_hours = 0
         self.availability = {
             "Monday": {"AM": "available", "PM": "available"},
             "Tuesday": {"AM": "available", "PM": "available"},
@@ -31,47 +30,118 @@ class Caregiver:
             "Sunday": {"AM": "available", "PM": "available"}
         }
 
-    ### Shift and availability string
-    def __str__(self):
-        schedule = "\n".join(
-            [f"{day}: AM - {shift['AM']}, PM - {shift['PM']}" for day, shift in self.availability.items()]
-        )
-        return (f"Caregiver: {self.name}, Phone: {self.phone}, Email: {self.email}, "
-                f"Pay Rate: ${self.pay_rate}/hr, Hours: {self.hours}\n"
-                f"Weekly Availability:\n{schedule}")
 
-    ### Set availability function
-    def set_availability(self, day, shift, status):
-        if day in self.availability and shift in self.availability[day]:
-            self.availability[day][shift] = status
-            return f"{day} {shift} shift availability updated to: {status}"
-        else:
-            return "Invalid day or shift. Please enter a valid day and shift (AM/PM)."
+    # Set the availability for the caregiver
+    def set_availability(self, date, shift, availability):
+        if date not in self.availability:
+            self.availability[date] = {}
+    
+        self.availability[date][shift] = availability
 
 
-### Establish 8 caregivers
-caregiver1 = Caregiver(name = "Gigi", phone = "555-1234", email = "gigi@example.com", pay_rate = 20.0)
+    # Get the availability on a specific date
+    def get_availability(self, date):
+        return self.availability.get(date, {})
 
-caregiver2 = Caregiver(name = "Noel", phone = "111-1234", email = "noel@example.com", pay_rate = 20.0)
 
-caregiver3 = Caregiver(name = "Joe", phone = "222-1234", email = "joe@example.com", pay_rate = 20.0)
-
-caregiver4 = Caregiver(name = "Silvia", phone = "333-1234", email = "silvia@example.com", pay_rate = 20.0)
-
-caregiver5 = Caregiver(name = "Tess", phone = "444-1234", email = "tess@example.com", pay_rate = 20.0)
-
-caregiver6 = Caregiver(name = "Rosa", phone = "665-1234", email = "rosa@example.com", pay_rate = 20.0)
-
-caregiver7 = Caregiver(name = "Lani", phone = "777-1234", email = "lani@example.com", pay_rate = 20.0)
-
-caregiver8 = Caregiver(name = "Sayed", phone = "888-1234", email = "sayed@example.com", pay_rate = 20.0)
-
-print(caregiver1.set_availability())
-print(caregiver1)
+    # Add hours from a shift
+    def add_hours(self, hours):
+        self.assigned_hours += hours
 
 
 
+### Function for adding new caregivers
+def add_caregiver():
+    # Input contact information
+    name = input("Enter Caregiver's Name: ")
+    phone = input("Enter Caregiver's Phone Number: ")
+    email = input("Enter Caregiver's Email Address: ")
 
+    # Input hourly pay rate
+    try:
+        pay_rate = float(input("Enter hourly pay rate (default $20/hr): ") or 20)
+
+    except ValueError:
+        print("Invalid input. Pay rate set to default $20/hr.")
+        pay_rate = 20
+    
+    caregiver = Caregiver(name, phone, email, pay_rate)
+    print(f"\nCaregiver {name} has been added.\n")
+    return caregiver
+
+
+
+### Set availability for each caregiver
+def set_week_availability(caregiver):
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    print(f"\nSetting availability for {caregiver.name}:")
+    
+    # Begin to set availability for each day
+    for day in days:
+        print(f"\n--- {day} ---")
+        
+        # Set AM availability
+        am_avail = input("Enter AM availability (preferred, available, unavailable): ").lower()
+
+        if am_avail not in ['preferred', 'available', 'unavailable']:
+            print("Invalid input. Defaulting to 'available'.")
+            am_avail = 'available'
+    
+        caregiver.set_availability(day, 'AM', am_avail)
+
+        # Set PM availability
+        pm_avail = input("Enter PM availability (preferred, available, unavailable): ").lower()
+
+        if pm_avail not in ['preferred', 'available', 'unavailable']:
+            print("Invalid input. Defaulting to 'available'.")
+            pm_avail = 'available'
+
+        caregiver.set_availability(day, 'PM', pm_avail)
+
+    print(f"\nAvailability set for {caregiver.name}.")
+
+
+def update_availability(caregivers):
+    if not caregivers:
+        print("\nNo caregivers available.")
+        return
+
+    # Display caregivers
+    print("\n--- Caregiver List ---")
+
+    for i, caregiver in enumerate(caregivers, 1):
+        print(f"{i}. {caregiver.name} ({caregiver.phone})")
+
+    # Select caregiver
+    try:
+        choice = int(input("\nSelect a caregiver by number: "))
+
+        if choice < 1 or choice > len(caregivers):
+            print("Invalid selection.")
+            return
+
+    except ValueError:
+        print("Invalid input.")
+        return
+
+    selected_caregiver = caregivers[choice - 1]
+    print(f"\nSelected caregiver: {selected_caregiver.name}")
+
+    # Update weekly availability
+    set_week_availability(selected_caregiver)
+
+
+
+def assign_shift(caregiver, date, shift):
+    # Check if person is unavailable
+    if caregiver.get_availability(date).get(shift, 'unavailable') == 'unavailable':
+        print(f"{caregiver.name} is unavailable for the {shift} shift on {date}.")
+        return
+    
+    # Assign shift 
+    print(f"{caregiver.name} assigned to the {shift} shift on {date}.")
+    caregiver.add_hours(6)  # Each shift is 6 hours
+    print(f"{caregiver.name} has now worked {caregiver.assigned_hours} hours.")
 
 ### Thomas
 #hello world
