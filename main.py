@@ -49,6 +49,11 @@ class Caregiver:
         self.assigned_hours += hours
 
 
+    # Calculate weekly pay for each caregiver
+    def calculate_weekly_pay(self):
+        return self.assigned_hours * self.pay_rate
+
+
 
 ### Function for adding new caregivers
 def add_caregiver():
