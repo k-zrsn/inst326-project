@@ -139,7 +139,7 @@ def update_availability(caregivers):
 
 
 
-### Assign a shift to a caregiver
+### Assign the shift to a caregiver
 def assign_shift(caregiver, date, shift):
     # Check if person is unavailable
     if caregiver.get_availability(date).get(shift, 'unavailable') == 'unavailable':
@@ -151,7 +151,46 @@ def assign_shift(caregiver, date, shift):
     caregiver.add_hours(6)  # Each shift is 6 hours
     print(f"{caregiver.name} has now worked {caregiver.assigned_hours} hours.")
 
+
+
+### Assign specific shifts for each caregiver
+def assign_weekly_shifts(caregivers):
+    days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    shifts = ['AM', 'PM']
+
+    for day in days_of_week:
+        print(f"\n### Assigning shifts for {day} ###")
+
+        for shift in shifts:
+            print(f"\n{shift} shift:")
+
+            # Display caregivers
+            for i, caregiver in enumerate(caregivers, 1):
+                print(f"{i}. {caregiver.name} ({caregiver.assigned_hours} hours worked)")
+
+            # Select a caregiver
+            try:
+                choice = int(input("Select a caregiver by number (or 0 to skip): "))
+
+                if choice == 0:
+                    print(f"Skipping {shift} shift on {day}.")
+                    continue
+
+                elif choice < 1 or choice > len(caregivers):
+                    print("Invalid selection.")
+                    continue
+        
+            except ValueError:
+                print("Invalid input.")
+                continue
+
+            selected_caregiver = caregivers[choice - 1]
+            assign_shift(selected_caregiver, day, shift)
+
+
+
 ### Thomas
+'''
 class Caregiver:
     def __init__(self, name, phone, email, pay_rate):
         self.name = name
@@ -172,7 +211,7 @@ class Caregiver:
         print(f"Availability for {self.name}:")
         for shift, status in self.availability.items():
             print(f"{shift} shift: {status}")
-
+'''
 # Create caregiver instances
 caregiver1 = Caregiver("Alice", "123-456-7890", "alice@example.com", 20)
 caregiver2 = Caregiver("Bob", "234-567-8901", "bob@example.com", 20)
@@ -190,6 +229,7 @@ caregiver2.display_availability()
 
 
 ### Anthony
+'''
 import tkinter as tk
 from tkinter import ttk
 from random import choice
@@ -200,7 +240,6 @@ from random import choice
 
 
 #Creating a Window 
-''' 
 window =tk.Tk()
 window.geometry('2000x1000')
 window.title("Weekly Pay and Monthly Totals")
@@ -255,3 +294,50 @@ def generate_pay_report(caregivers):
         file.write("\n" .join(lines)) 
     print(f"\nWeekly report has been generated as {report_file}")
     print(f"\n".join(lines))
+
+
+
+def main():
+    while True:
+        print("\n### Scheduling Program ###")
+        print("1: Add Caregiver")
+        print("2: View Caregivers")
+        print("3: Update Weekly Availability")
+        print("4: Assign Shift")
+        print("5: Generate Pay Report")
+        print("6: Generate Care Schedule")
+        print("7: Exit")
+        choice = input("\nInput the number of what you would like to do: ")
+    
+        if choice == '1':
+            caregiver = add_caregiver()
+            caregivers.append(caregiver)
+    
+        elif choice == '2':
+            if not caregivers:
+                print("\nCaregivers not yet added.")
+            else:
+                print("\n### Caregiver List ###")
+                for i, c in enumerate(caregivers, 1):
+                    print(f"{i}. {c.name} ({c.phone}, {c.email})")
+
+        elif choice == '3':
+            update_availability(caregivers)
+
+        elif choice == '4':
+            assign_weekly_shifts(caregivers)
+
+        elif choice == '5':
+            generate_pay_report(caregivers)
+
+        elif choice == '6':
+            generate_schedule(caregivers)
+
+        elif choice == '7':
+            print("\nExiting.")
+            break
+
+        else:
+            print("\nInvalid choice. Try again.")
+
+main()
