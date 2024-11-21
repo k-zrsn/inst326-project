@@ -144,7 +144,41 @@ def assign_shift(caregiver, date, shift):
     print(f"{caregiver.name} has now worked {caregiver.assigned_hours} hours.")
 
 ### Thomas
+class Caregiver:
+    def __init__(self, name, phone, email, pay_rate):
+        self.name = name
+        self.phone = phone
+        self.email = email
+        self.pay_rate = pay_rate
+        self.availability = {"AM": "available", "PM": "available"}  # Default availability
 
+    # Set availability for a specific shift
+    def set_availability(self, shift, availability):
+        if shift in self.availability and availability in ["preferred", "available", "unavailable"]:
+            self.availability[shift] = availability
+        else:
+            print("Invalid input.")
+
+    # Display caregiver's availability
+    def display_availability(self):
+        print(f"Availability for {self.name}:")
+        for shift, status in self.availability.items():
+            print(f"{shift} shift: {status}")
+
+# Create caregiver instances
+caregiver1 = Caregiver("Alice", "123-456-7890", "alice@example.com", 20)
+caregiver2 = Caregiver("Bob", "234-567-8901", "bob@example.com", 20)
+
+# Set availability for each caregiver
+caregiver1.set_availability("AM", "preferred")
+caregiver1.set_availability("PM", "unavailable")
+
+caregiver2.set_availability("AM", "available")
+caregiver2.set_availability("PM", "preferred")
+
+# Display caregiver availability
+caregiver1.display_availability()
+caregiver2.display_availability()
 
 
 ### Anthony
