@@ -200,18 +200,19 @@ from random import choice
 
 
 #Creating a Window 
+''' 
 window =tk.Tk()
 window.geometry('2000x1000')
 window.title("Weekly Pay and Monthly Totals")
 
-#Data
+Data
 caregivers = ['Anthony', 'Thomas', 'Virgil']
 Hourly_Pay = [20, 20, 20]
 Assigned_Hours = [40, 40, 40]
 Weekly_Pay = [800, 800, 800]
 Monthly_Pay = [3200, 3200, 3200]
 
-#Table 
+Table 
 table = ttk.Treeview(window, columns = ('Name', 'Pay', 'Assigned', 'Weekly', 'Monthly'), show = 'headings')
 table.heading('Name', text = 'Caregiver Name')
 table.heading('Pay', text = 'Caregiver Hourly Pay')
@@ -229,4 +230,28 @@ for i in range(100):
 
 #Keeping Window Running
 window.mainloop()
+'''
 
+
+
+# Anthony Part 4, Generating Pay Report
+def generate_pay_report(caregivers):
+    lines = ["### Weekly Pay Report ###\n"]
+    weekly_total = 0
+    monthly_total = 0
+    #iterating throught caregivers inputed
+    for caregiver in caregivers:
+        #calculating weekly pay 
+        weekly_pay = caregiver.calculate_weekly_pay()
+        lines.append(f"{caregiver.name}: {caregiver.assigned_hours} hours * ${caregiver.pay_rate} / hr = $ {weekly_pay:.2f}")
+        monthly_total += weekly_pay * 4
+        weekly_total += weekly_pay
+    #Appending weekly and monthly pay to txt file 
+    lines.append(f"\n Weekly Total: ${weekly_total:.2f}")
+    lines.append(f"\n Monthly Total: ${monthly_total:.2f}\n")
+    #Save report to txt file 
+    report_file = "Weekly_Pay_Report.txt"
+    with open(report_file, 'w') as file:
+        file.write("\n" .join(lines)) 
+    print(f"\nWeekly report has been generated as {report_file}")
+    print(f"\n".join(lines))
