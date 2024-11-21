@@ -55,7 +55,7 @@ class Caregiver:
 
 
 
-### Function for adding new caregivers
+### Add new caregivers
 def add_caregiver():
     # Input contact information
     name = input("Enter Caregiver's Name: ")
@@ -106,6 +106,8 @@ def set_week_availability(caregiver):
     print(f"\nAvailability set for {caregiver.name}.")
 
 
+
+### Update availability of a caregiver
 def update_availability(caregivers):
     if not caregivers:
         print("\nNo caregivers available.")
@@ -137,6 +139,7 @@ def update_availability(caregivers):
 
 
 
+### Assign a shift to a caregiver
 def assign_shift(caregiver, date, shift):
     # Check if person is unavailable
     if caregiver.get_availability(date).get(shift, 'unavailable') == 'unavailable':
