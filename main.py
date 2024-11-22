@@ -211,7 +211,7 @@ class Caregiver:
         print(f"Availability for {self.name}:")
         for shift, status in self.availability.items():
             print(f"{shift} shift: {status}")
-'''
+
 # Create caregiver instances
 caregiver1 = Caregiver("Alice", "123-456-7890", "alice@example.com", 20)
 caregiver2 = Caregiver("Bob", "234-567-8901", "bob@example.com", 20)
@@ -226,6 +226,53 @@ caregiver2.set_availability("PM", "preferred")
 # Display caregiver availability
 caregiver1.display_availability()
 caregiver2.display_availability()
+'''
+
+def generate_schedule(caregivers):
+    now = datetime.now()
+    year=now.year
+    month=now.month
+    cal=calendar.HTMLCalendar()
+    html_calendar = cal.formatmonth(year,month)
+    schedule = {day: {"AM": [], "PM": []}
+                for day in range(1, calendar.monthrange(year,month)[1]+1)}
+    
+    daysofweek=["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    
+    for day in schedule:
+        weekday= daysofweek[calendar.weekday (year, month, day)]
+        for shift in ["AM", "PM"]:
+            avaiable_caregivers = [
+                c for c in caregivers 
+                if c.get_availability(weekday).get(shift,"unavailable")!= "unavailable"]
+            preferred_caregivers = [
+                 c for c in caregivers 
+                if c.get_availability(weekday).get(shift)== "preferred"]
+            if preferrred_caregivers: 
+                caregiver = preferred_caregivers[0]
+            elif available_caregivers: 
+                caregiver = available_caregivers[0]
+            else:
+                caregiver = None
+            if caregiver:
+                schedule[day][shift].append(caregiver.name)
+                caregiver.add_hours(6)
+
+    for day,shifts in schedule.items():
+        if shifts["AM"] or shifts["PM"]:
+            day_html = f"<b>AM:</b> {', '.join(shifts['AM'])}<br><b>PM:</b> {', '.join(shifts['PM'])}"
+            html_calendar = html_calendar.replace(f'>{day}<', f'>{day}<br>{day_html}<')
+
+    report_file = "care_schedule.html"
+    with open(report_file, "w") as file: 
+        file.write(f"<html><head><title>Care Schedule</title></head><body>{html_calendar}</body></html>")
+
+    print(f"\n care schedule generated: {report_file}")
+        
+        
+                
+                
+                
 
 
 ### Anthony
