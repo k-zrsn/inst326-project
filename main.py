@@ -1,11 +1,9 @@
 ### Main calendar program
 
-
-### Virgil
 import calendar
 from datetime import datetime
 
-
+############################ Virgil ############################
 
 ### Initialize caregiver list
 caregivers = []
@@ -189,7 +187,7 @@ def assign_weekly_shifts(caregivers):
 
 
 
-### Thomas
+############################ Thomas ############################
 '''
 class Caregiver:
     def __init__(self, name, phone, email, pay_rate):
@@ -229,53 +227,71 @@ caregiver2.display_availability()
 '''
 
 def generate_schedule(caregivers):
+    # Get current month and year
     now = datetime.now()
     year=now.year
     month=now.month
+
+    # Create calendar object
     cal=calendar.HTMLCalendar()
+
+    # Create HTML calendar
     html_calendar = cal.formatmonth(year,month)
+
+    # Initialize schedule
     schedule = {day: {"AM": [], "PM": []}
                 for day in range(1, calendar.monthrange(year,month)[1]+1)}
     
-    daysofweek=["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     
+    # Assign caregivers to shifts based on availability and preferences
     for day in schedule:
-        weekday= daysofweek[calendar.weekday (year, month, day)]
+        weekday= days_of_week[calendar.weekday (year, month, day)]
+
         for shift in ["AM", "PM"]:
-            avaiable_caregivers = [
+            # Find available caregiver
+            available_caregivers = [
                 c for c in caregivers 
-                if c.get_availability(weekday).get(shift,"unavailable")!= "unavailable"]
+                if c.get_availability(weekday).get(shift,"unavailable") != "unavailable"]
+            
+            # Find preferred caregiver
             preferred_caregivers = [
-                 c for c in caregivers 
-                if c.get_availability(weekday).get(shift)== "preferred"]
-            if preferrred_caregivers: 
+                c for c in caregivers 
+                if c.get_availability(weekday).get(shift) == "preferred"]
+            
+            # Assign first preferred caregiver
+            if preferred_caregivers: 
                 caregiver = preferred_caregivers[0]
+
+            # Assign first available caregiver
             elif available_caregivers: 
                 caregiver = available_caregivers[0]
+
+            # None available
             else:
                 caregiver = None
+
+            
             if caregiver:
                 schedule[day][shift].append(caregiver.name)
-                caregiver.add_hours(6)
+                caregiver.add_hours(6) # 6hr shifts
 
-    for day,shifts in schedule.items():
+    # Insert schedule to HTML calendar
+    for day, shifts in schedule.items():
         if shifts["AM"] or shifts["PM"]:
             day_html = f"<b>AM:</b> {', '.join(shifts['AM'])}<br><b>PM:</b> {', '.join(shifts['PM'])}"
             html_calendar = html_calendar.replace(f'>{day}<', f'>{day}<br>{day_html}<')
 
+    # Create file and save calendar as HTML file
     report_file = "care_schedule.html"
     with open(report_file, "w") as file: 
         file.write(f"<html><head><title>Care Schedule</title></head><body>{html_calendar}</body></html>")
 
-    print(f"\n care schedule generated: {report_file}")
-        
-        
-                
-                
-                
+    print(f"\nCare schedule generated: {report_file}")
 
 
-### Anthony
+
+############################ Anthony ############################
 '''
 import tkinter as tk
 from tkinter import ttk
@@ -318,9 +334,6 @@ for i in range(100):
 window.mainloop()
 '''
 
-
-
-# Anthony Part 4, Generating Pay Report
 def generate_pay_report(caregivers):
     lines = ["### Weekly Pay Report ###\n"]
     weekly_total = 0
